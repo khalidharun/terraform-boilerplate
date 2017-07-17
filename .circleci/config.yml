@@ -24,4 +24,4 @@ jobs:
       - run:
           name: check terraform plan
           command: |
-            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan main.tf
+            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan
