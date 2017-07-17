@@ -15,13 +15,12 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      # run tests!
       - run:
           name: check terraform format
           command: |
-            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light fmt
-      # run tests!
+            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light fmt -diff=true
+            git diff --exit-code
       - run:
           name: check terraform plan
           command: |
-            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan
+            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan -detailed-exitcode=true -input=false
