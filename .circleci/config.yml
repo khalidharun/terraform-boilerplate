@@ -19,4 +19,4 @@ jobs:
       - run:
           name: Test terraform plan
           command: |
-            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan -detailed-exitcode=true -input=false
+            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan -detailed-exitcode=true -var "aws_access_key=$TF_VAR_aws_access_key" -var "aws_secret_key=$TF_VAR_aws_secret_key" -var "aws_key_name=$TF_VAR_aws_key_name"
