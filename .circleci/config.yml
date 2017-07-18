@@ -5,38 +5,18 @@
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
+    machine: true
 
     working_directory: ~/terraform-boilerplate
 
     steps:
       - checkout
-      - type: shell
-        name: Install Docker Client
-        command: |
-          echo "test"
-          curl -L -o /tmp/docker.tgz https://get.docker.com/builds/Linux/x86_64/docker-1.12.3.tgz
-          tar -xz -C /tmp -f /tmp/docker.tgz
-          mv /tmp/docker/docker* /usr/bin/
-
-          curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
-          chmod +x  /usr/bin/docker-compose
-      - type: setup-docker-engine
-      - type: shell
-        name: Verify Docker Works
-        command: |
-          docker --version
-          docker run hello-world
-      # run tests!
       - run:
-          name: Format Terraform files
+          name: Inspect format of Terraform files
           command: |
-            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light fmt
-      # run tests!
+            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light fmt -diff=true
+            git diff --exit-code
       - run:
-          name: Test terraform plan
+          name: Test the creation of a terraform plan
           command: |
-            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan main.tf
+            docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan -var "aws_access_key=$TF_VAR_aws_access_key" -var "aws_secret_key=$TF_VAR_aws_secret_key" -var "aws_key_name=$TF_VAR_aws_key_name"
