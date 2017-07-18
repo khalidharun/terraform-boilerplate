@@ -12,11 +12,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Format Terraform files
+          name: Inspect format of Terraform files
           command: |
             docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light fmt -diff=true
             git diff --exit-code
       - run:
-          name: Test terraform plan
+          name: Test the creation of a terraform plan
           command: |
             docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan -var "aws_access_key=$TF_VAR_aws_access_key" -var "aws_secret_key=$TF_VAR_aws_secret_key" -var "aws_key_name=$TF_VAR_aws_key_name"
