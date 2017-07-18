@@ -5,22 +5,18 @@
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
+    machine: true
 
     working_directory: ~/terraform-boilerplate
 
     steps:
       - checkout
-      - setup_remote_docker
       - run:
-          name: check terraform format
+          name: Format Terraform files
           command: |
             docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light fmt -diff=true
             git diff --exit-code
       - run:
-          name: check terraform plan
+          name: Test terraform plan
           command: |
             docker run -v $PWD:/data -w="/data" -i -t hashicorp/terraform:light plan -detailed-exitcode=true -input=false
